@@ -1,24 +1,19 @@
 package main
 
 import (
+	"fmt"
+	"sort"
 	"strings"
 )
 
-func Permutation(text []string, size int, n int) []string {
-	permuted_list := make([]string, 0)
+func Permutation(text []string, size int, n int, result *[]string) {
 	if size == 1 {
-		return text
+		*result = append(*result, strings.Join(text, ""))
+		return
 	}
 
 	for i := 0; i < size; i++ {
-		arranged := Permutation(text, size-1, n)
-
-		str_arranged := strings.Join(arranged, "")
-		if size == n {
-			permuted_list = append(permuted_list, arranged...)
-		} else {
-			permuted_list = append(permuted_list, str_arranged)
-		}
+		Permutation(text, size-1, n, result)
 
 		if size%2 == 1 {
 			text[0], text[size-1] = text[size-1], text[0]
@@ -27,7 +22,6 @@ func Permutation(text []string, size int, n int) []string {
 		}
 	}
 
-	return permuted_list
 }
 
 func RemoveDuplicate[T comparable](sliceList []T) []T {
@@ -42,9 +36,16 @@ func RemoveDuplicate[T comparable](sliceList []T) []T {
 	return list
 }
 
-func Manipulate(text []string) []string {
+func Manipulate(text string) []string {
 	// TODO : start your code here
-	man := Permutation(text, len(text), len(text))
-	man = RemoveDuplicate(man)
-	return man
+	str_split := strings.Split(text, "")
+	var result []string
+	Permutation(str_split, len(text), len(text), &result)
+	result = RemoveDuplicate(result)
+	sort.Strings(result)
+	return result
+}
+
+func main() {
+	fmt.Println(Manipulate("ab"))
 }
